@@ -2,7 +2,7 @@
 
 ## Description
 
-This is the official API for Ops Mage server-to-server communications. It is developed for the purpose of CMS or server-side programmatic platform enrichment.
+This is the official API for Ops Mage server-to-server communications. It is developed for the purpose of CMS integration or server-side programmatic platform enrichment. Ahead of integration consult your integration documents and Ops Mage representative to ensure classification systems are prepared for your domain(s).
 
 ## Base URL
 
@@ -11,28 +11,28 @@ The base URL for all API requests is:
 `https://context.opsmage.io/api/v1/opsmage`
 
 ## Authentication
-Autentication of requests is done via an API key that is appended to the base URL with the api_key= paramter. For and API key contact your Ops Mage representative.
+Autentication of requests is done via an API key that is appended to the base URL with the api_key= parameter. For an API key contact your Ops Mage representative.
 
 ## Actions
 
 ### `GET ?url`
 
-Returns the relevant classified information for a given URL
+Returns the relevant classified information json for a given URL
 
 ### Parameters
 
 - `api_key` (required): The provisioned API for your account or domain.
-- `url` (required): The unique identified for the URL or classification target in BASE64 encoded form.
+- `url` (required): The unique identified for the URL or classification target in base64 encoded form.
 
 ### Response
 
 Returns a JSON object with the following properties:
 
 - `url_hash`: the md5hash of the non-base64 encoded URL.
-- `unclassifed_values`: an array of any values that do not fit into standard IAB classification that the AI still deemed relevant.
-- `unlcassified_ids`: an array of unique ID for each of these unlcassified values in Ops Mage.
+- `unclassifed_values`: an array of any values that do not fit into standard IAB classification, but the AI still deemed relevant.
+- `unlcassified_ids`: an array of unique IDs for each of the unlcassified values in Ops Mage for the given article.
 - `classified_values`: an array of IAB classification values. Returns the top level and nested values, where nested values will have their parents prepended with a '|' character.
-- `classified_ids`: an array of the unique IDs for each IAB classification as stored in Ops Mage (typically takes on the form of the IAB classification value)
+- `classified_ids`: an array of the unique IDs for each IAB classification as stored in Ops Mage (typically takes on the form of the IAB classification value), each ID maps to respective value in order found in the classified_value array.
 - `sentiment`: an array of the media or article sentiment: negative, neutral, positive.
 - `source`: a string description of the classification source type: text, audio, video
 - `brands`: an array of any brand names identified in the source content.
