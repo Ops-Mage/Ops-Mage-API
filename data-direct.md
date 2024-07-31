@@ -5,7 +5,7 @@ Below is the API documentation for the provided code, explaining the functionali
 # API Documentation
 
 ## Overview
-This API allows for an Ops Mage customer to submit data directly for contextualization and brand suitability, as well as retrieve data that has been contextualized. 
+This API allows for Ops Mage customers to submit data directly for contextualization and brand suitability, as well as retrieve data that has been contextualized. 
 
 ### Base URL
 - `https://opsmage-api.io`
@@ -15,7 +15,7 @@ This API allows for an Ops Mage customer to submit data directly for contextuali
 
 ## Endpoints
 
-### 1. GET /
+### 1. GET /context
 
 #### Description
 Retrieves a context item from DynamoDB based on either `content_id` or `opsmage_id`.
@@ -32,7 +32,7 @@ Retrieves a context item from DynamoDB based on either `content_id` or `opsmage_
 #### Request Example
 
 ```http
-GET {BASE_URL}?api_key=<your_api_key>&content_id=<unique_presisted_content_id>
+GET {BASE_URL}/context?api_key=<your_api_key>&content_id=<unique_presisted_content_id>&ops_mage_id=<unqiue_ops_mage_identifer>
 ```
 
 #### Response
@@ -45,7 +45,7 @@ GET {BASE_URL}?api_key=<your_api_key>&content_id=<unique_presisted_content_id>
     "content_classificaiton": {
             'opmsage_data_id': "d66f3d757bf05d92e5c122c5770da0d3",
             'content_id': "https://www.xkcd.com/1481/",
-            'media_type': "text",
+            'media_type': "<text|image|video>",
             'publisher_domain': "xkcd.com",
             'res_score': .87,
             'iab_cats': ['Books & Literature', 'Entertainment', 'Technology'],
@@ -57,23 +57,7 @@ GET {BASE_URL}?api_key=<your_api_key>&content_id=<unique_presisted_content_id>
             'emotions': ['Delight', 'Happiness', 'Satisfaction', 'Trust'],
             'emotion_ids': ['d829bb17','b4915e0a','92bfd7eb','cbc7c3aa'],
             'related_opsmage_ids': ['63d6d73c03fc61319ae403e076f4a95a']
-    },
-    'related_content': [{
-            'opmsage_data_id': '63d6d73c03fc61319ae403e076f4a95a',
-            'content_id': 'https://imgs.xkcd.com/comics/api.png',
-            'media_type': 'image',
-            'publisher_domain': 'xkcd.com',
-            'res_score': .92,
-            'iab_cats': ['Entertainment', 'Technology'],
-            'iab_cat_ids': ['JLBCU7', '89'],
-            'brands': [],
-            'brand_ids': [],
-            'restricted_cat': [],
-            'restricted_cat_id': [],
-            'emotions': ['Satisfaction', 'Trust'],
-            'emotion_ids': [,'92bfd7eb','cbc7c3aa'],
-            'related_opsmage_ids': ['d66f3d757bf05d92e5c122c5770da0d3']
-    }]
+    }
 }
 
 
@@ -95,18 +79,26 @@ GET {BASE_URL}?api_key=<your_api_key>&content_id=<unique_presisted_content_id>
     }
     ```
   - **Item Not Found:**
-    - **Code:** 4040 Not Found
+    - **Code:** 400 Not Found
     - **Content:**
     ```json
     {
       "error": "No classified content with this ID, please try again later."
     }
     ```
-
-### 2. POST /
+- **Misc Errors:**
+    - **Code:** 400 Not FOund
+    - **Content:**
+    ```json
+    {
+      "error": "<more detailed error reporting not yet documented>"
+    }
+    ```
+    
+### 2. POST /context
 
 #### Description
-Saves content and optionally an image to S3, and stores metadata in DynamoDB.
+Initiates classification of content. Classification typically occures in under a minute.
 
 #### Parameters
 
@@ -114,21 +106,22 @@ Saves content and optionally an image to S3, and stores metadata in DynamoDB.
   - `api_key` (string, required): The API key to authenticate the request.
 
 - **Body Parameters:**
-  - `content_id` (string, required): The content providers unique ID of the content (this can be the full URL for the web page or other identifier used by the publisher). 
-  - `content` (string, required): The content data to be saved.
-  - `image_id` (string, optional): The publisher's associated ID of the image, if no ID, you can use the URL to the image.
-  - `image_url` (string, optional): The URL to the image.
+  - `content_id` (string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used. 
+  - `content` (string, required): The content string to be contextualized.
   - `domain` (string, required): The domain associated with the content.
+  - `image_id` (string, optional): The publisher's associated ID of the image, if no ID, you can use the URL to the image. * Currently in closed Beta
+  - `image_url` (string, optional): The URL to the image. * Currently in closed Beta
+  
 
 #### Request Example
 
 ```http
-POST {BASE_URL}/?api_key=your_api_key
+POST {BASE_URL}/context?api_key=your_api_key
 Content-Type: application/json
 
 {
   "content_id": "12345",
-  "content": "Sample content data",
+  "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce maximus commodo odio. Integer quam diam, pulvinar ornare lorem non, laoreet aliquam diam. Vivamus pellentesque sapien vel sodales fermentum. Donec lacinia imperdiet nibh a mollis. Praesent sed pretium velit, sed accumsan nulla.",
   "image_id": "img_123",
   "image_url": "https://imgs.xkcd.com/comics/api.png",
   "domain": "xkcd.com"
@@ -143,9 +136,9 @@ Content-Type: application/json
   ```json
   {
     "content_id": "12345",
-    "ops_mage_id": "hashed_content_id",
+    "ops_mage_id": "827ccb0eea8a706c4c34a16891f84e7b", //unique id for content generated by opsmage
     "image_id": "img_123",
-    "ops_mage_image_id": "hashed_image_id",
+    "ops_mage_image_id": "6142b5473b532149b34e5c29a14cb762", //unique id for image, generated by opsmage
     "content_status": "processing",
     "image_status": "processing"
   }
@@ -188,4 +181,4 @@ Content-Type: application/json
 
 ## Support
 
-For further assistance, contact the API support team at leif@opsmage.io
+For further assistance leif@opsmage.io
