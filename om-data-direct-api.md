@@ -48,6 +48,7 @@ GET {BASE_URL}/context?api_key=<your_api_key>&content_id=<unique_presisted_conte
             'media_type': "<text|image|video>",
             'publisher_domain': "xkcd.com",
             'res_score': .87,
+            'res_score_bucket': "high", //scored values are also grouped for easy targeting: high|medium|low|unscored
             'iab_cats': ['Books & Literature', 'Entertainment', 'Technology'],
             'iab_cat_ids': ['42', 'JLBCU7', '89'],
             'brands': [],
