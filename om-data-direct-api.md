@@ -28,7 +28,7 @@ Retrieves a context item based on either `content_id` or `opsmage_id`.
 #### Request Example
 
 ```http
-GET {BASE_URL}/context/api?api_key=<your_api_key>&content_id=aHR0cHM6Ly93d3cueGtjZC5jb20vMTQ4MS8=&ops_mage_id=d66f3d757bf05d92e5c122c5770da0d3
+GET {BASE_URL}/context/api?api_key=<your_api_key>&content_id=aHR0cHM6Ly93d3cueGtjZC5jb20vMTQ4MS8=&ops_mage_id=
 ```
 
 #### Response
@@ -84,7 +84,7 @@ GET {BASE_URL}/context/api?api_key=<your_api_key>&content_id=aHR0cHM6Ly93d3cueGt
     }
     ```
 - **Misc Errors:**
-    - **Code:** 400 Not FOund
+    - **Code:** 400 Not Found
     - **Content:**
     ```json
     {
@@ -145,7 +145,7 @@ Content-Type: application/json
 
 - **Error Responses:**
   - **Invalid API Key:**
-    - **Code:** 401 Unauthorized
+    - **Code:** 400 Bad Request
     - **Content:**
     ```json
     {
