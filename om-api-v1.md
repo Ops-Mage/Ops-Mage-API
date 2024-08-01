@@ -1,5 +1,5 @@
-# Ops Mage API v1.0
-
+# Ops Mage API v1.0 ::: DEPRECATED
+# THIS DOCUMENTATION IS NO LONGER SUPPORTED. Please see Data Direct Api
 ## Description
 
 This is the official API for Ops Mage server-to-server communications. It is developed for the purpose of CMS integration or server-side programmatic platform enrichment. Ahead of integration consult your integration documents and Ops Mage representative to ensure classification systems are prepared for your domain(s).

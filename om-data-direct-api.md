@@ -1,7 +1,3 @@
-Below is the API documentation for the provided code, explaining the functionality for GET and POST requests, including required data and responses.
-
----
-
 # API Documentation
 
 ## Overview
@@ -15,24 +11,24 @@ This API allows for Ops Mage customers to submit data directly for contextualiza
 
 ## Endpoints
 
-### 1. GET /context
+### 1. GET /context/api
 
 #### Description
-Retrieves a context item from DynamoDB based on either `content_id` or `opsmage_id`.
+Retrieves a context item based on either `content_id` or `opsmage_id`.
 
 #### Parameters
 
 - **Query Parameters:**
   - `api_key` (string, required): The API key to authenticate the request.
-  - `content_id` (string, optional): The ID of the content to retrieve as initially provided for during contextualization.
+  - `content_id` (Base64 encoded string, optional): The ID of the content to retrieve as initially provided for during contextualization.
   - `opsmage_id` (string, optional): The unique opsmage ID of the content to retrieve.
 
-> Note: Either `content_id` or `opsmage_id` must be provided.
+> Note: Either `content_id` or `opsmage_id` must be provided (if you know the opsmage_id). If both are present, content_id will take priority.
 
 #### Request Example
 
 ```http
-GET {BASE_URL}/context?api_key=<your_api_key>&content_id=<unique_presisted_content_id>&ops_mage_id=<unqiue_ops_mage_identifer>
+GET {BASE_URL}/context/api?api_key=<your_api_key>&content_id=aHR0cHM6Ly93d3cueGtjZC5jb20vMTQ4MS8=&ops_mage_id=d66f3d757bf05d92e5c122c5770da0d3
 ```
 
 #### Response
@@ -48,7 +44,7 @@ GET {BASE_URL}/context?api_key=<your_api_key>&content_id=<unique_presisted_conte
             'media_type': "<text|image|video>",
             'publisher_domain': "xkcd.com",
             'res_score': .87,
-            'res_score_bucket': "high", //scored values are also grouped for easy targeting: high|medium|low|unscored
+            'res_score_bucket': 'high',
             'iab_cats': ['Books & Literature', 'Entertainment', 'Technology'],
             'iab_cat_ids': ['42', 'JLBCU7', '89'],
             'brands': [],
@@ -95,36 +91,38 @@ GET {BASE_URL}/context?api_key=<your_api_key>&content_id=<unique_presisted_conte
       "error": "<more detailed error reporting not yet documented>"
     }
     ```
+- **500 Errors:**
+    - **Code:** 5XX <relevant message>
     
-### 2. POST /context
+### 2. POST /context/api
 
 #### Description
-Initiates classification of content. Classification typically occures in under a minute.
+Initiates classification of content. Text classification typically occures in under a minute.
 
 #### Parameters
 
 - **Query Parameters:**
   - `api_key` (string, required): The API key to authenticate the request.
+  - `content_id` (base64 encoded string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used. 
 
 - **Body Parameters:**
-  - `content_id` (string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used. 
   - `content` (string, required): The content string to be contextualized.
-  - `domain` (string, required): The domain associated with the content.
-  - `image_id` (string, optional): The publisher's associated ID of the image, if no ID, you can use the URL to the image. * Currently in closed Beta
-  - `image_url` (string, optional): The URL to the image. * Currently in closed Beta
+  - `domain` (string, required): The domain associated with the content. Domains are whitelisted per API key, thus must be accurate to your account, this is inclusive of sub domains.
+  - `image_id` (string, optional): The publisher's associated ID of the image, if no ID, you can use the URL to the image. *Currently not public for use
+  - `image_url` (string, optional): The URL to the image. *Currently not public for use
   
 
 #### Request Example
 
 ```http
-POST {BASE_URL}/context?api_key=your_api_key
+POST {BASE_URL}/context/api?api_key=your_api_key&content_id=aHR0cHM6Ly93d3cueGtjZC5jb20vMTQ4MS8=
 Content-Type: application/json
 
 {
-  "content_id": "12345",
+  "content_id": "aHR0cHM6Ly93d3cueGtjZC5jb20vMTQ4MS8=",
   "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce maximus commodo odio. Integer quam diam, pulvinar ornare lorem non, laoreet aliquam diam. Vivamus pellentesque sapien vel sodales fermentum. Donec lacinia imperdiet nibh a mollis. Praesent sed pretium velit, sed accumsan nulla.",
-  "image_id": "img_123",
-  "image_url": "https://imgs.xkcd.com/comics/api.png",
+  "image_id": "",
+  "image_url": "",
   "domain": "xkcd.com"
 }
 ```
@@ -136,12 +134,12 @@ Content-Type: application/json
   - **Content Example:**
   ```json
   {
-    "content_id": "12345",
+    "content_id": "https://www.xkcd.com/1481/", //the base54 decodedd content ID supplied
     "ops_mage_id": "827ccb0eea8a706c4c34a16891f84e7b", //unique id for content generated by opsmage
-    "image_id": "img_123",
-    "ops_mage_image_id": "6142b5473b532149b34e5c29a14cb762", //unique id for image, generated by opsmage
+    "image_id": "",
+    "ops_mage_image_id": "", //unique id for image, generated by opsmage
     "content_status": "processing",
-    "image_status": "processing"
+    "image_status": ""
   }
   ```
 
@@ -175,7 +173,7 @@ Content-Type: application/json
     - **Content:**
     ```json
     {
-      "error": "content type or media processing error: {error message}"
+      "error": "content type or media processing error"
     }
     ```
 
