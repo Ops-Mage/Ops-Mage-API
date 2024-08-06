@@ -20,7 +20,7 @@ Retrieves a context item based on either `content_id` or `opsmage_id`.
 
 - **Query Parameters:**
   - `api_key` (string, required): The API key to authenticate the request.
-  - `content_id` (Base64 encoded string, optional): The ID of the content to retrieve as initially provided for during contextualization.
+  - `content_id`  (base64 encoded string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used..
   - `opsmage_id` (string, optional): The unique opsmage ID of the content to retrieve.
 
 > Note: Either `content_id` or `opsmage_id` must be provided (if you know the opsmage_id). If both are present, content_id will take priority.
