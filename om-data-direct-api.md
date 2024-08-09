@@ -3,6 +3,18 @@
 ## Overview
 This API allows for Ops Mage customers to submit data directly for contextualization and brand suitability, as well as retrieve data that has been contextualized. 
 
+For efficiency we also return a bucketed score of 'unscored','low','medium','high' where 'low' is poor quality unsafe content, 'medium' may have some more adult content, emotional themes, or topical subjects that may be about sensitive content (for example, a review about an action movie that takes place in a war), 'high' quality is content that does not have any sensitive content in it, but may have a range of emotions.
+
+The score bucketing is as follows:
+'unscored' = content that has not been analyzed yet. This will always have a default score of 0
+'low' = a score of .4 and lower
+'medium' = a score of .41 to .67
+'high' = anything greater than .67
+
+### Cacheing
+Content requests are cached for 1 minute intervals and cache based on the content_id. 
+If you need to defeat the cache, contact Ops Mage.
+
 ### Base URL
 - `https://opsmage-api.io`
 
@@ -20,7 +32,7 @@ Retrieves a context item based on either `content_id` or `opsmage_id`.
 
 - **Query Parameters:**
   - `api_key` (string, required): The API key to authenticate the request.
-  - `content_id`  (base64 encoded string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used..
+  - `content_id`  (base64 encoded string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used. ASCII characters only.
   - `opsmage_id` (string, optional): The unique opsmage ID of the content to retrieve.
 
 > Note: Either `content_id` or `opsmage_id` must be provided (if you know the opsmage_id). If both are present, content_id will take priority.
@@ -51,6 +63,7 @@ GET {BASE_URL}/context/api?api_key=<your_api_key>&content_id=aHR0cHM6Ly93d3cueGt
             'brand_ids': [],
             'restricted_cat': [],
             'restricted_cat_id': [],
+            'content_status': 'processed|processing error',
             'emotions': ['Delight', 'Happiness', 'Satisfaction', 'Trust'],
             'emotion_ids': ['d829bb17','b4915e0a','92bfd7eb','cbc7c3aa'],
             'related_opsmage_ids': ['63d6d73c03fc61319ae403e076f4a95a']
@@ -98,12 +111,14 @@ GET {BASE_URL}/context/api?api_key=<your_api_key>&content_id=aHR0cHM6Ly93d3cueGt
 
 #### Description
 Initiates classification of content. Text classification typically occures in under a minute.
+Content scores are returned between 0.0 and 1.0
+
 
 #### Parameters
 
 - **Query Parameters:**
   - `api_key` (string, required): The API key to authenticate the request.
-  - `content_id` (base64 encoded string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used. 
+  - `content_id` (base64 encoded string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used.  ASCII characters only.
 
 - **Body Parameters:**
   - `content` (string, required): The content string to be contextualized.
@@ -119,7 +134,6 @@ POST {BASE_URL}/context/api?api_key=your_api_key&content_id=aHR0cHM6Ly93d3cueGtj
 Content-Type: application/json
 
 {
-  "content_id": "aHR0cHM6Ly93d3cueGtjZC5jb20vMTQ4MS8=",
   "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce maximus commodo odio. Integer quam diam, pulvinar ornare lorem non, laoreet aliquam diam. Vivamus pellentesque sapien vel sodales fermentum. Donec lacinia imperdiet nibh a mollis. Praesent sed pretium velit, sed accumsan nulla.",
   "image_id": "",
   "image_url": "",
