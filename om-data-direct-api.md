@@ -6,10 +6,10 @@ This API allows for Ops Mage customers to submit data directly for contextualiza
 For efficiency we also return a bucketed score of 'unscored','low','medium','high' where 'low' is poor quality unsafe content, 'medium' may have some more adult content, emotional themes, or topical subjects that may be about sensitive content (for example, a review about an action movie that takes place in a war), 'high' quality is content that does not have any sensitive content in it, but may have a range of emotions.
 
 The score bucketing is as follows:
-'unscored' = content that has not been analyzed yet. This will always have a default score of 0
-'low' = a score of .4 and lower
-'medium' = a score of .41 to .67
-'high' = anything greater than .67
+- 'unscored' = content that has not been analyzed yet. This will always have a default score of 0
+- 'low' = a score of .4 and lower
+- 'medium' = a score of .41 to .67
+- 'high' = a score greater than or equal to .68
 
 ### Cacheing
 Content requests are cached for 1 minute intervals and cache based on the content_id. 
