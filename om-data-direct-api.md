@@ -210,16 +210,12 @@ Instructs the Ops Mage Content Scanning Bot to consume content from a supplied U
   - `content_id` (base64 encoded string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used.  ASCII characters only.
 
 - **Body Parameters:**
-  - `url` (string, required): The url to be contextualized
+  - empty JSON object (future expansion will have further functionality and customization)
 
 ```http
 POST {BASE_URL}/context/scanner?api_key=your_api_key&content_id=aHR0cHM6Ly91cGxvYWQud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvY29tbW9ucy83Lzc5L0dhemVsbGFfZ2F6ZWxsYS5qcGc=
 Content-Type: application/json
-
-{
-  "iurl": "https://mywesbitetoscan.com/this/that.html",
-  "domain": "mywesbitetoscan.com"
-}
+{}
 ```
 
 ## Support
