@@ -121,7 +121,7 @@ Content scores are returned between 0.0 and 1.0
   - `content_id` (base64 encoded string, required): The content provider's persisted unique ID of the content for future requests about the contextualization. If no unique ID, the unique URL of the content (webpage) should be used.  ASCII characters only.
 
 - **Body Parameters:**
-  - `content` (string, required): The content string to be contextualized.
+  - `content` (string, required): The content string to be contextualized. If processing an image, the content string should be left as an empty string.
   - `domain` (string, required): The domain associated with the content. Domains are whitelisted per API key, thus must be accurate to your account, this is inclusive of sub domains.
   - `image_url` (string, optional): The URL of the image to be classified
   
