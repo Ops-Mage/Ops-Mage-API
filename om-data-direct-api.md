@@ -141,6 +141,7 @@ Content-Type: application/json
 ```
 
 #### *Image* Request Example
+## Only jpg,gif(non-animated),png are currently supported ##
 
 ```http
 POST {BASE_URL}/context/api?api_key=your_api_key&content_id=aHR0cHM6Ly91cGxvYWQud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvY29tbW9ucy83Lzc5L0dhemVsbGFfZ2F6ZWxsYS5qcGc=
